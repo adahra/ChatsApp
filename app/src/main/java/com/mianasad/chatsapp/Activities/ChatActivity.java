@@ -273,11 +273,8 @@ public class ChatActivity extends AppCompatActivity {
                     return map;
                 }
             };
-
             queue.add(request);
-
-        } catch (Exception ex) {
-
+        } catch (Exception ignored) {
         }
     }
 
