@@ -52,7 +52,6 @@
                 android:layout_marginRight="12dp"
                 app:srcCompat="@drawable/ic_camera"
                 app:tint="#676767" />
-
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 

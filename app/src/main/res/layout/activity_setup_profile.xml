@@ -11,10 +11,10 @@
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="32dp"
+        android:src="@drawable/avatar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:src="@drawable/avatar" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/phoneLbl"
@@ -65,8 +65,7 @@
                 android:background="@drawable/textbox_outline"
                 android:ems="10"
                 android:hint="Type your name"
-                android:padding="10dp"
-                 />
+                android:padding="10dp" />
 
             <Button
                 android:id="@+id/continueBtn"
@@ -77,5 +76,4 @@
                 android:text="Setup Profile" />
         </LinearLayout>
     </androidx.cardview.widget.CardView>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
