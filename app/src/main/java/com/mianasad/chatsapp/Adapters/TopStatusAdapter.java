@@ -11,10 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.mianasad.chatsapp.Activities.MainActivity;
 import com.mianasad.chatsapp.Models.Status;
-import com.mianasad.chatsapp.Models.User;
 import com.mianasad.chatsapp.Models.UserStatus;
 import com.mianasad.chatsapp.R;
-import com.mianasad.chatsapp.databinding.ItemSentBinding;
 import com.mianasad.chatsapp.databinding.ItemStatusBinding;
 
 import java.util.ArrayList;
@@ -24,7 +22,6 @@ import omari.hamza.storyview.callback.StoryClickListeners;
 import omari.hamza.storyview.model.MyStory;
 
 public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopStatusViewHolder> {
-
     Context context;
     ArrayList<UserStatus> userStatuses;
 
@@ -42,7 +39,6 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
 
     @Override
     public void onBindViewHolder(@NonNull TopStatusViewHolder holder, int position) {
-
         UserStatus userStatus = userStatuses.get(position);
 
         Status lastStatus = userStatus.getStatuses().get(userStatus.getStatuses().size() - 1);
@@ -55,11 +51,11 @@ public class TopStatusAdapter extends RecyclerView.Adapter<TopStatusAdapter.TopS
             @Override
             public void onClick(View v) {
                 ArrayList<MyStory> myStories = new ArrayList<>();
-                for(Status status : userStatus.getStatuses()) {
+                for (Status status : userStatus.getStatuses()) {
                     myStories.add(new MyStory(status.getImageUrl()));
                 }
 
-                new StoryView.Builder(((MainActivity)context).getSupportFragmentManager())
+                new StoryView.Builder(((MainActivity) context).getSupportFragmentManager())
                         .setStoriesList(myStories) // Required
                         .setStoryDuration(5000) // Default is 2000 Millis (2 Seconds)
                         .setTitleText(userStatus.getName()) // Default is Hidden

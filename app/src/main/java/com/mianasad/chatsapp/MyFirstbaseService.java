@@ -24,10 +24,8 @@ public class MyFirstbaseService extends FirebaseMessagingService {
     public void onMessageReceived(@NonNull @NotNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
-
         RemoteMessage.Notification notification = remoteMessage.getNotification();
         sendNotification(notification.getTitle(), notification.getBody());
-
     }
 
     private void sendNotification(String title, String messageBody) {

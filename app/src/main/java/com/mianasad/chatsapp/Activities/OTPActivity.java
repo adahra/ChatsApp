@@ -1,20 +1,24 @@
 package com.mianasad.chatsapp.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseException;
+import com.google.firebase.FirebaseTooManyRequestsException;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.PhoneAuthCredential;
 import com.google.firebase.auth.PhoneAuthOptions;
 import com.google.firebase.auth.PhoneAuthProvider;
@@ -24,6 +28,7 @@ import com.mukesh.OnOtpCompletionListener;
 import java.util.concurrent.TimeUnit;
 
 public class OTPActivity extends AppCompatActivity {
+    private static final String TAG = OTPActivity.class.getSimpleName();
 
     ActivityOTPBinding binding;
     FirebaseAuth auth;
@@ -31,6 +36,8 @@ public class OTPActivity extends AppCompatActivity {
     String verificationId;
 
     ProgressDialog dialog;
+
+    private PhoneAuthProvider.ForceResendingToken token;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +54,6 @@ public class OTPActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-
-
         String phoneNumber = getIntent().getStringExtra("phoneNumber");
 
         binding.phoneLbl.setText("Verify " + phoneNumber);
@@ -60,12 +65,20 @@ public class OTPActivity extends AppCompatActivity {
                 .setCallbacks(new PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
                     @Override
                     public void onVerificationCompleted(@NonNull PhoneAuthCredential phoneAuthCredential) {
-
+                        Log.d(TAG, "onVerificationCompleted:" + phoneAuthCredential);
                     }
 
                     @Override
                     public void onVerificationFailed(@NonNull FirebaseException e) {
+                        Log.d(TAG, "onVerificationFailed", e);
 
+                        if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                            // Invalid request
+                            Log.d(TAG, "AuthInvalidCredentialsException", e);
+                        } else if (e instanceof FirebaseTooManyRequestsException) {
+                            // The SMS quota for the project has been exceeded
+                            Log.d(TAG, "TooManyRequestsException", e);
+                        }
                     }
 
                     @Override
@@ -73,12 +86,14 @@ public class OTPActivity extends AppCompatActivity {
                         super.onCodeSent(verifyId, forceResendingToken);
                         dialog.dismiss();
                         verificationId = verifyId;
+                        token = forceResendingToken;
 
-                        InputMethodManager imm = (InputMethodManager)   getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
                         binding.otpView.requestFocus();
                     }
-                }).build();
+                })
+                .build();
 
         PhoneAuthProvider.verifyPhoneNumber(options);
 
@@ -90,7 +105,7 @@ public class OTPActivity extends AppCompatActivity {
                 auth.signInWithCredential(credential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Intent intent = new Intent(OTPActivity.this, SetupProfileActivity.class);
                             startActivity(intent);
                             finishAffinity();
@@ -101,10 +116,5 @@ public class OTPActivity extends AppCompatActivity {
                 });
             }
         });
-
-
-
-
-
     }
 }

@@ -1,10 +1,5 @@
 package com.mianasad.chatsapp.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -12,14 +7,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -32,7 +29,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -52,7 +48,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ChatActivity extends AppCompatActivity {
-
     ActivityChatBinding binding;
 
     MessagesAdapter adapter;
@@ -87,7 +82,6 @@ public class ChatActivity extends AppCompatActivity {
 
         messages = new ArrayList<>();
 
-
         String name = getIntent().getStringExtra("name");
         String profile = getIntent().getStringExtra("image");
         String token = getIntent().getStringExtra("token");
@@ -112,10 +106,10 @@ public class ChatActivity extends AppCompatActivity {
         database.getReference().child("presence").child(receiverUid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
+                if (snapshot.exists()) {
                     String status = snapshot.getValue(String.class);
-                    if(!status.isEmpty()) {
-                        if(status.equals("Offline")) {
+                    if (!status.isEmpty()) {
+                        if (status.equals("Offline")) {
                             binding.status.setVisibility(View.GONE);
                         } else {
                             binding.status.setText(status);
@@ -145,7 +139,7 @@ public class ChatActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         messages.clear();
-                        for(DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                             Message message = snapshot1.getValue(Message.class);
                             message.setMessageId(snapshot1.getKey());
                             messages.add(message);
@@ -197,7 +191,6 @@ public class ChatActivity extends AppCompatActivity {
                         });
                     }
                 });
-
             }
         });
 
@@ -213,6 +206,13 @@ public class ChatActivity extends AppCompatActivity {
 
         final Handler handler = new Handler();
         binding.messageBox.addTextChangedListener(new TextWatcher() {
+            final Runnable userStoppedTyping = new Runnable() {
+                @Override
+                public void run() {
+                    database.getReference().child("presence").child(senderUid).setValue("Online");
+                }
+            };
+
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
@@ -227,17 +227,9 @@ public class ChatActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {
                 database.getReference().child("presence").child(senderUid).setValue("typing...");
                 handler.removeCallbacksAndMessages(null);
-                handler.postDelayed(userStoppedTyping,1000);
+                handler.postDelayed(userStoppedTyping, 1000);
             }
-
-            Runnable userStoppedTyping = new Runnable() {
-                @Override
-                public void run() {
-                    database.getReference().child("presence").child(senderUid).setValue("Online");
-                }
-            };
         });
-
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
@@ -257,13 +249,13 @@ public class ChatActivity extends AppCompatActivity {
             data.put("body", message);
             JSONObject notificationData = new JSONObject();
             notificationData.put("notification", data);
-            notificationData.put("to",token);
+            notificationData.put("to", token);
 
             JsonObjectRequest request = new JsonObjectRequest(url, notificationData
                     , new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
-                   // Toast.makeText(ChatActivity.this, "success", Toast.LENGTH_SHORT).show();
+                    // Toast.makeText(ChatActivity.this, "success", Toast.LENGTH_SHORT).show();
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -284,21 +276,18 @@ public class ChatActivity extends AppCompatActivity {
 
             queue.add(request);
 
-
         } catch (Exception ex) {
 
         }
-
-
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 25) {
-            if(data != null) {
-                if(data.getData() != null) {
+        if (requestCode == 25) {
+            if (data != null) {
+                if (data.getData() != null) {
                     Uri selectedImage = data.getData();
                     Calendar calendar = Calendar.getInstance();
                     StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
@@ -307,7 +296,7 @@ public class ChatActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             dialog.dismiss();
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {

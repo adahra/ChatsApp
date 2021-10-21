@@ -1,19 +1,17 @@
 package com.mianasad.chatsapp.Activities;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.mianasad.chatsapp.databinding.ActivityPhoneNumberBinding;
 
 public class PhoneNumberActivity extends AppCompatActivity {
-
     ActivityPhoneNumberBinding binding;
     FirebaseAuth auth;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,7 +21,7 @@ public class PhoneNumberActivity extends AppCompatActivity {
 
         auth = FirebaseAuth.getInstance();
 
-        if(auth.getCurrentUser() != null) {
+        if (auth.getCurrentUser() != null) {
             Intent intent = new Intent(PhoneNumberActivity.this, MainActivity.class);
             startActivity(intent);
             finish();
@@ -41,6 +39,5 @@ public class PhoneNumberActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
     }
 }

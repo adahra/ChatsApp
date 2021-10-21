@@ -1,14 +1,14 @@
 package com.mianasad.chatsapp.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,7 +25,6 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class SetupProfileActivity extends AppCompatActivity {
-
     ActivitySetupProfileBinding binding;
     FirebaseAuth auth;
     FirebaseDatabase database;
@@ -64,18 +63,18 @@ public class SetupProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String name = binding.nameBox.getText().toString();
 
-                if(name.isEmpty()) {
+                if (name.isEmpty()) {
                     binding.nameBox.setError("Please type a name");
                     return;
                 }
 
                 dialog.show();
-                if(selectedImage != null) {
+                if (selectedImage != null) {
                     StorageReference reference = storage.getReference().child("Profiles").child(auth.getUid());
                     reference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
@@ -125,7 +124,6 @@ public class SetupProfileActivity extends AppCompatActivity {
                                 }
                             });
                 }
-
             }
         });
     }
@@ -134,16 +132,16 @@ public class SetupProfileActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(data != null) {
-            if(data.getData() != null) {
+        if (data != null) {
+            if (data.getData() != null) {
                 Uri uri = data.getData(); // filepath
                 FirebaseStorage storage = FirebaseStorage.getInstance();
                 long time = new Date().getTime();
-                StorageReference reference = storage.getReference().child("Profiles").child(time+"");
+                StorageReference reference = storage.getReference().child("Profiles").child(time + "");
                 reference.putFile(uri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                 @Override
                                 public void onSuccess(Uri uri) {
@@ -163,7 +161,6 @@ public class SetupProfileActivity extends AppCompatActivity {
                         }
                     }
                 });
-
 
                 binding.imageView.setImageURI(data.getData());
                 selectedImage = data.getData();

@@ -2,7 +2,6 @@ package com.mianasad.chatsapp.Adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -26,16 +25,12 @@ import com.mianasad.chatsapp.databinding.ItemReceiveBinding;
 import com.mianasad.chatsapp.databinding.ItemSentBinding;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class MessagesAdapter extends RecyclerView.Adapter {
-
-    Context context;
-    ArrayList<Message> messages;
-
     final int ITEM_SENT = 1;
     final int ITEM_RECEIVE = 2;
-
+    Context context;
+    ArrayList<Message> messages;
     String senderRoom;
     String receiverRoom;
 
@@ -52,7 +47,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        if(viewType == ITEM_SENT) {
+        if (viewType == ITEM_SENT) {
             View view = LayoutInflater.from(context).inflate(R.layout.item_sent, parent, false);
             return new SentViewHolder(view);
         } else {
@@ -64,7 +59,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         Message message = messages.get(position);
-        if(FirebaseAuth.getInstance().getUid().equals(message.getSenderId())) {
+        if (FirebaseAuth.getInstance().getUid().equals(message.getSenderId())) {
             return ITEM_SENT;
         } else {
             return ITEM_RECEIVE;
@@ -75,7 +70,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         Message message = messages.get(position);
 
-        int reactions[] = new int[]{
+        int[] reactions = new int[]{
                 R.drawable.ic_fb_like,
                 R.drawable.ic_fb_love,
                 R.drawable.ic_fb_laugh,
@@ -90,15 +85,15 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
         ReactionPopup popup = new ReactionPopup(context, config, (pos) -> {
 
-            if(pos < 0)
+            if (pos < 0)
                 return false;
 
-            if(holder.getClass() == SentViewHolder.class) {
-                SentViewHolder viewHolder = (SentViewHolder)holder;
+            if (holder.getClass() == SentViewHolder.class) {
+                SentViewHolder viewHolder = (SentViewHolder) holder;
                 viewHolder.binding.feeling.setImageResource(reactions[pos]);
                 viewHolder.binding.feeling.setVisibility(View.VISIBLE);
             } else {
-                ReceiverViewHolder viewHolder = (ReceiverViewHolder)holder;
+                ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
                 viewHolder.binding.feeling.setImageResource(reactions[pos]);
                 viewHolder.binding.feeling.setVisibility(View.VISIBLE);
 
@@ -120,15 +115,14 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                     .child(message.getMessageId()).setValue(message);
 
 
-
             return true; // true is closing popup, false is requesting a new selection
         });
 
 
-        if(holder.getClass() == SentViewHolder.class) {
-            SentViewHolder viewHolder = (SentViewHolder)holder;
+        if (holder.getClass() == SentViewHolder.class) {
+            SentViewHolder viewHolder = (SentViewHolder) holder;
 
-            if(message.getMessage().equals("photo")) {
+            if (message.getMessage().equals("photo")) {
                 viewHolder.binding.image.setVisibility(View.VISIBLE);
                 viewHolder.binding.message.setVisibility(View.GONE);
                 Glide.with(context)
@@ -139,7 +133,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
             viewHolder.binding.message.setText(message.getMessage());
 
-            if(message.getFeeling() >= 0) {
+            if (message.getFeeling() >= 0) {
                 viewHolder.binding.feeling.setImageResource(reactions[message.getFeeling()]);
                 viewHolder.binding.feeling.setVisibility(View.VISIBLE);
             } else {
@@ -151,7 +145,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 public boolean onTouch(View v, MotionEvent event) {
 
                     boolean isFeelingsEnabled = remoteConfig.getBoolean("isFeelingsEnabled");
-                    if(isFeelingsEnabled)
+                    if (isFeelingsEnabled)
                         popup.onTouch(v, event);
                     else
                         Toast.makeText(context, "This feature is disabled temporarily.", Toast.LENGTH_SHORT).show();
@@ -177,7 +171,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                             .setView(binding.getRoot())
                             .create();
 
-                    if(remoteConfig.getBoolean("isEveryoneDeletionEnabled")) {
+                    if (remoteConfig.getBoolean("isEveryoneDeletionEnabled")) {
                         binding.everyone.setVisibility(View.VISIBLE);
                     } else {
                         binding.everyone.setVisibility(View.GONE);
@@ -227,8 +221,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 }
             });
         } else {
-            ReceiverViewHolder viewHolder = (ReceiverViewHolder)holder;
-            if(message.getMessage().equals("photo")) {
+            ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
+            if (message.getMessage().equals("photo")) {
                 viewHolder.binding.image.setVisibility(View.VISIBLE);
                 viewHolder.binding.message.setVisibility(View.GONE);
                 Glide.with(context)
@@ -238,7 +232,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             }
             viewHolder.binding.message.setText(message.getMessage());
 
-            if(message.getFeeling() >= 0) {
+            if (message.getFeeling() >= 0) {
                 //message.setFeeling(reactions[message.getFeeling()]);
                 viewHolder.binding.feeling.setImageResource(reactions[message.getFeeling()]);
                 viewHolder.binding.feeling.setVisibility(View.VISIBLE);
@@ -325,8 +319,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     }
 
     public class SentViewHolder extends RecyclerView.ViewHolder {
-
         ItemSentBinding binding;
+
         public SentViewHolder(@NonNull View itemView) {
             super(itemView);
             binding = ItemSentBinding.bind(itemView);
@@ -334,7 +328,6 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     }
 
     public class ReceiverViewHolder extends RecyclerView.ViewHolder {
-
         ItemReceiveBinding binding;
 
         public ReceiverViewHolder(@NonNull View itemView) {
@@ -342,5 +335,4 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             binding = ItemReceiveBinding.bind(itemView);
         }
     }
-
 }

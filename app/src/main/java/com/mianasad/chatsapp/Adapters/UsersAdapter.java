@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHolder> {
-
     Context context;
     ArrayList<User> users;
 
@@ -107,5 +106,4 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
             binding = RowConversationBinding.bind(itemView);
         }
     }
-
 }

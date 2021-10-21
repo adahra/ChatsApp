@@ -1,15 +1,15 @@
 package com.mianasad.chatsapp.Activities;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -23,17 +23,13 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.mianasad.chatsapp.Adapters.GroupMessagesAdapter;
-import com.mianasad.chatsapp.Adapters.MessagesAdapter;
 import com.mianasad.chatsapp.Models.Message;
-import com.mianasad.chatsapp.R;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
 public class GroupChatActivity extends AppCompatActivity {
-
     com.mianasad.chatsapp.databinding.ActivityGroupChatBinding binding;
     GroupMessagesAdapter adapter;
     ArrayList<Message> messages;
@@ -72,7 +68,7 @@ public class GroupChatActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         messages.clear();
-                        for(DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                             Message message = snapshot1.getValue(Message.class);
                             message.setMessageId(snapshot1.getKey());
                             messages.add(message);
@@ -117,9 +113,9 @@ public class GroupChatActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 25) {
-            if(data != null) {
-                if(data.getData() != null) {
+        if (requestCode == 25) {
+            if (data != null) {
+                if (data.getData() != null) {
                     Uri selectedImage = data.getData();
                     Calendar calendar = Calendar.getInstance();
                     StorageReference reference = storage.getReference().child("chats").child(calendar.getTimeInMillis() + "");
@@ -128,7 +124,7 @@ public class GroupChatActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                             dialog.dismiss();
-                            if(task.isSuccessful()) {
+                            if (task.isSuccessful()) {
                                 reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                     @Override
                                     public void onSuccess(Uri uri) {
@@ -155,7 +151,6 @@ public class GroupChatActivity extends AppCompatActivity {
             }
         }
     }
-
 
     @Override
     public boolean onSupportNavigateUp() {
